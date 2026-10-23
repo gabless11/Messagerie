@@ -9,24 +9,71 @@
         <link 
               rel="stylesheet"
               href="Messagerie.css" />
+        <script src="Messagerie.js" defer></script>
     </head>
 <!-- En ligne -->
 
-    <body>
+    <body class="home-page">
+        <button
+            type="button"
+            class="settings-toggle"
+            id="settings-toggle"
+            aria-label="Ouvrir les paramètres"
+            aria-expanded="false"
+            aria-controls="settings-sidebar"
+            title="Paramètres">⚙</button>
+
         <h1><ins>Messagerie Personnelle</ins></h1>
 
         <p>
-            <marquee><strong><i>Bienvenue !</i></strong></marquee>
+            <marquee><strong><i><span id="welcome-message">Bienvenue</span></i></strong></marquee>
         </p>
 
-        <p>
-            <strong>Liste des contacts: </strong><a href=contacts.html>Accéder</a>
-        </p>
+        <section class="home-access" aria-label="Accéder à la messagerie">
+            <form action="conversation.html">
+                <p>
+                    <label for="courriel">Email :</label>
+                    <input required
+                           type="email"
+                           id="courriel"
+                           autocomplete="email" />
+                </p>
+                <p>
+                    <label for="password">Mot de passe :</label>
+                    <input
+                           type="password"
+                           id="password"
+                           autocomplete="current-password"
+                           required />
+                    <label class="password-visibility">
+                        <input type="checkbox" onclick="showpassword()" />
+                        Afficher le mot de passe
+                    </label>
+                </p>
+                <p>
+                    <button class="conversation-access-button" type="submit">Accéder</button>
+                </p>
+            </form>
+        </section>
+
+        <aside
+            id="settings-sidebar"
+            class="settings-sidebar"
+            aria-label="Paramètres"
+            aria-hidden="true"
+            inert>
+            <div class="contacts-sidebar-header">
+                <h2>Paramètres</h2>
+                <button
+                    type="button"
+                    id="settings-close"
+                    class="settings-close"
+                    aria-label="Fermer les paramètres">×</button>
+            </div>
+            <iframe src="parametres.html" title="Réglages de la messagerie"></iframe>
+        </aside>
     </body>
 
 <foot>
-    <p>
-        <a href="parametres.html">Paramètres</a>
-    </p>
 </foot>
 </html>
