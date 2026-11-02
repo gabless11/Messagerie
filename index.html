@@ -1,8 +1,9 @@
-﻿<html>
+﻿<!doctype html>
+<html lang="fr">
 
     <head>
         <meta charset="utf-8" />
-        <title>messagerie</title>
+        <title>Connexion</title>
         <meta
               name="description"
               content="Blabla" /> 
@@ -10,9 +11,8 @@
               rel="stylesheet"
               href="Messagerie.css" />
         <script src="Messagerie.js" defer></script>
+        <script type="module" src="supabase.js"></script>
     </head>
-<!-- En ligne -->
-
     <body class="home-page">
         <button
             type="button"
@@ -30,12 +30,13 @@
         </p>
 
         <section class="home-access" aria-label="Accéder à la messagerie">
-            <form action="conversation.html">
+            <form id="login-form">
                 <p>
                     <label for="courriel">Email :</label>
                     <input required
                            type="email"
                            id="courriel"
+                           name="email"
                            autocomplete="email" />
                 </p>
                 <p>
@@ -43,6 +44,7 @@
                     <input
                            type="password"
                            id="password"
+                           name="password"
                            autocomplete="current-password"
                            required />
                     <label class="password-visibility">
@@ -51,8 +53,13 @@
                     </label>
                 </p>
                 <p>
-                    <button class="conversation-access-button" type="submit">Accéder</button>
+                    <button id="login-submit" class="conversation-access-button" type="submit">Accéder</button>
+                    <button id="signup-submit" class="conversation-access-button" type="submit" hidden>Créer</button>
                 </p>
+                <p>
+                    <button id="auth-mode-toggle" class="auth-mode-toggle" type="button">Créer un compte</button>
+                </p>
+                <p id="login-status" class="login-status" role="status" aria-live="polite"></p>
             </form>
         </section>
 
@@ -73,7 +80,4 @@
             <iframe src="parametres.html" title="Réglages de la messagerie"></iframe>
         </aside>
     </body>
-
-<foot>
-</foot>
 </html>

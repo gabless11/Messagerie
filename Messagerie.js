@@ -1,6 +1,4 @@
-﻿console.log("Bonjour")
-
-const welcomeMessage = document.getElementById("welcome-message");
+﻿const welcomeMessage = document.getElementById("welcome-message");
 if (welcomeMessage) {
     const today = new Intl.DateTimeFormat("fr-FR", {
         weekday: "long",
@@ -10,48 +8,32 @@ if (welcomeMessage) {
     welcomeMessage.textContent = `Bienvenue en ce ${today}`;
 }
 
-const courriel =
-    document.querySelector("#courriel");
-
-const courrielMessage =
-    document.querySelector("#courriel-message");
-
-if (courriel && courrielMessage) {
-    courriel.addEventListener("input", function() {
-        const valeur = courriel.value;
-        const aUnArobase = valeur.includes("@");
-
-        if (valeur === "") {
-            courrielMessage.textContent =
-                "Le courriel est obligatoire";
-        } else if (!aUnArobase) {
-            courrielMessage.textContent =
-                "Le courriel n'est pas valide";
-        } else {
-            courrielMessage.textContent = "";
-        }
-    });
-}
 function showpassword() {
-    var x = document.getElementById("password");
-    if (x.type === "password") {
-        x.type = "text";
-    } else {
-        x.type = "password";
-    } console.log(x.type)
+    const password = document.getElementById("password");
+    password.type = password.type === "password" ? "text" : "password";
 }
 
 const settingsToggle = document.getElementById("settings-toggle");
 const settingsSidebar = document.getElementById("settings-sidebar");
 const settingsClose = document.getElementById("settings-close");
+const settingsOpenStorageKey = "settingsSidebarOpen";
 
 if (settingsToggle && settingsSidebar && settingsClose) {
+    function setSettingsOpen(isOpen) {
+        settingsSidebar.classList.toggle("is-open", isOpen);
+        settingsSidebar.setAttribute("aria-hidden", String(!isOpen));
+        settingsSidebar.inert = !isOpen;
+        settingsToggle.setAttribute("aria-expanded", String(isOpen));
+        localStorage.setItem(settingsOpenStorageKey, String(isOpen));
+    }
+
     function closeSettings() {
-        settingsSidebar.classList.remove("is-open");
-        settingsSidebar.setAttribute("aria-hidden", "true");
-        settingsSidebar.inert = true;
-        settingsToggle.setAttribute("aria-expanded", "false");
+        setSettingsOpen(false);
         settingsToggle.focus();
+    }
+
+    if (localStorage.getItem(settingsOpenStorageKey) === "true") {
+        setSettingsOpen(true);
     }
 
     settingsToggle.addEventListener("click", () => {
@@ -61,10 +43,7 @@ if (settingsToggle && settingsSidebar && settingsClose) {
             return;
         }
 
-        settingsSidebar.classList.add("is-open");
-        settingsSidebar.setAttribute("aria-hidden", "false");
-        settingsSidebar.inert = false;
-        settingsToggle.setAttribute("aria-expanded", "true");
+        setSettingsOpen(true);
         settingsClose.focus();
     });
 
@@ -78,11 +57,9 @@ if (settingsToggle && settingsSidebar && settingsClose) {
 
 (() => {
     const contactsStorageKey = "lastMessagedPeople";
-    const storedContacts = JSON.parse(
-        localStorage.getItem(contactsStorageKey) ?? "[]"
-    );
+    const storedContacts = JSON.parse(localStorage.getItem(contactsStorageKey) ?? "[]");
     let recentContacts = Array.isArray(storedContacts)
-        ? storedContacts.filter((contact) => typeof contact === "string")
+        ? storedContacts.filter((name) => typeof name === "string")
         : [];
 
     function setupContactList() {
@@ -92,9 +69,12 @@ if (settingsToggle && settingsSidebar && settingsClose) {
         const activeContact = new URLSearchParams(
             window.parent.location.search
         ).get("contact");
-        const links = Array.from(contactList.querySelectorAll("a")).map((link) => {
+        const links = [...contactList.querySelectorAll("a")].map((link) => {
             const name = link.textContent.trim();
-            link.href = `conversation.html?contact=${encodeURIComponent(name)}`;
+            const conversationUrl = new URL("conversation.html", window.parent.location.href);
+            conversationUrl.searchParams.set("contact", name);
+            link.href = conversationUrl.href;
+            link.target = "_top";
 
             if (name === activeContact) {
                 link.setAttribute("aria-current", "page");
@@ -103,33 +83,35 @@ if (settingsToggle && settingsSidebar && settingsClose) {
             return { link, name };
         });
 
-        links.sort((first, second) => {
-            const firstIndex = recentContacts.indexOf(first.name);
-            const secondIndex = recentContacts.indexOf(second.name);
-
-            if (firstIndex === -1 && secondIndex === -1) {
-                return first.name.localeCompare(second.name);
-            }
-            if (firstIndex === -1) return 1;
-            if (secondIndex === -1) return -1;
-            return firstIndex - secondIndex;
-        });
-
-        links.forEach(({ link }) => contactList.append(link.parentElement));
+        links.sort(({ name: first }, { name: second }) => {
+            const firstIndex = recentContacts.indexOf(first);
+            const secondIndex = recentContacts.indexOf(second);
+            return firstIndex < 0 && secondIndex < 0
+                ? first.localeCompare(second)
+                : firstIndex < 0 ? 1
+                : secondIndex < 0 ? -1
+                : firstIndex - secondIndex;
+        }).forEach(({ link }) => contactList.append(link.parentElement));
     }
 
     function setupContactsResize() {
         const sidebar = document.querySelector(".contacts-sidebar");
         const handle = sidebar?.querySelector(".contacts-resize-handle");
         if (!sidebar || !handle) return;
+        const widthStorageKey = "contactsSidebarWidth";
 
         function setWidth(width) {
             const isMobile = window.matchMedia("(max-width: 600px)").matches;
             const maxWidth = window.innerWidth * (isMobile ? 1 : 0.7);
             const minWidth = Math.min(180, maxWidth);
-            sidebar.style.width = `${Math.round(
-                Math.min(maxWidth, Math.max(minWidth, width))
-            )}px`;
+            const roundedWidth = Math.round(Math.min(maxWidth, Math.max(minWidth, width)));
+            sidebar.style.width = `${roundedWidth}px`;
+            localStorage.setItem(widthStorageKey, String(roundedWidth));
+        }
+
+        const savedWidth = Number(localStorage.getItem(widthStorageKey));
+        if (Number.isFinite(savedWidth) && savedWidth > 0) {
+            setWidth(savedWidth);
         }
 
         handle.addEventListener("pointerdown", (event) => {
@@ -155,18 +137,10 @@ if (settingsToggle && settingsSidebar && settingsClose) {
 
         new ResizeObserver(([entry]) => {
             const { width, height } = entry.contentRect;
-            document.body.style.setProperty(
-                "--contacts-sidebar-width",
-                `${Math.round(width)}px`
-            );
-            document.body.style.setProperty(
-                "--contacts-sidebar-half-width",
-                `${Math.round(width / 2)}px`
-            );
-            document.body.style.setProperty(
-                "--contacts-sidebar-height",
-                `${Math.round(height)}px`
-            );
+            document.body.style.setProperty("--contacts-sidebar-width", `${Math.round(width)}px`);
+            document.body.style.setProperty("--contacts-sidebar-half-width", `${Math.round(width / 2)}px`);
+            document.body.style.setProperty("--contacts-sidebar-height", `${Math.round(height)}px`);
+            localStorage.setItem(widthStorageKey, String(Math.round(width)));
         }).observe(sidebar);
     }
 
@@ -183,16 +157,11 @@ if (settingsToggle && settingsSidebar && settingsClose) {
         const messages = Array.isArray(storedMessages) ? storedMessages : [];
 
         if (contact && title) {
-            title.textContent = `Fil de discussion avec ${contact}`;
+            title.textContent = `Conversation avec ${contact}`;
         }
 
         function displayMessage(message) {
-            if (
-                typeof message.text !== "string"
-                || !["you", "contact"].includes(message.sender)
-            ) {
-                return;
-            }
+            if (typeof message.text !== "string" || !["you", "contact"].includes(message.sender)) return;
 
             const entry = document.createElement("div");
             entry.className = `message-entry message-entry--${message.sender}`;
@@ -203,10 +172,7 @@ if (settingsToggle && settingsSidebar && settingsClose) {
             entry.append(bubble);
 
             const sentAt = new Date(message.timestamp);
-            if (
-                typeof message.timestamp === "string"
-                && !Number.isNaN(sentAt.getTime())
-            ) {
+            if (typeof message.timestamp === "string" && !Number.isNaN(sentAt.getTime())) {
                 const time = document.createElement("time");
                 time.className = "message-timestamp";
                 time.dateTime = sentAt.toISOString();
@@ -218,6 +184,7 @@ if (settingsToggle && settingsSidebar && settingsClose) {
             }
 
             messageList.append(entry);
+            messageList.scrollTop = messageList.scrollHeight;
         }
 
         messages.forEach(displayMessage);
@@ -249,10 +216,7 @@ if (settingsToggle && settingsSidebar && settingsClose) {
                     contact,
                     ...recentContacts.filter((name) => name !== contact)
                 ];
-                localStorage.setItem(
-                    contactsStorageKey,
-                    JSON.stringify(recentContacts)
-                );
+                localStorage.setItem(contactsStorageKey, JSON.stringify(recentContacts));
             }
         });
     }
