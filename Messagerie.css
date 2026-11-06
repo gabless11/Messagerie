@@ -32,7 +32,6 @@ button { font: inherit; cursor: pointer; }
     min-width: 180px;
     max-width: 70vw;
     overflow: auto;
-    resize: horizontal;
 }
 
 .contacts-sidebar-header {
@@ -187,6 +186,14 @@ body.conversation-page .conversation-messages {
     background: var(--surface);
 }
 
+body.conversation-page .conversation-status {
+    flex: 0 0 auto;
+    min-height: 1.2em;
+    margin: 0.35rem auto;
+    color: #a12622;
+    text-align: center;
+}
+
 body.conversation-page .message-entry { display: flex; flex: 0 0 auto; flex-direction: column; width: 100%; max-width: 100%; }
 body.conversation-page .message-entry--you { align-self: flex-end; align-items: flex-end; }
 body.conversation-page .message-entry--contact { align-self: flex-start; align-items: flex-start; }
@@ -204,7 +211,36 @@ body.conversation-page .message-bubble {
 body.conversation-page .message-bubble--contact { color: #222; background: #eee; }
 body.conversation-page .message-timestamp { padding-inline: 0.25rem; color: #666; font-size: 0.7rem; }
 
-body.conversation-page .conversation-main form {
+body.conversation-page .message-actions,
+body.conversation-page .message-edit-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+body.conversation-page .message-action {
+    padding: 0.2rem 0.45rem;
+    border: 0;
+    border-radius: 0.35rem;
+    color: var(--primary-dark);
+    background: transparent;
+    font-size: 0.75rem;
+}
+
+body.conversation-page .message-action:hover { background: #e8f1eb; }
+body.conversation-page .message-action:disabled { cursor: wait; opacity: 0.6; }
+
+body.conversation-page .message-edit-input {
+    width: min(36rem, 75vw);
+    min-height: 4rem;
+    padding: 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    font: inherit;
+}
+
+body.conversation-page .conversation-main > form {
     position: fixed;
     z-index: 5;
     bottom: 0;
@@ -235,7 +271,15 @@ body.conversation-page .message-composer:focus-within { border-color: var(--prim
 body.contacts-page,
 body.settings-page { background: var(--surface); }
 body.contacts-page { padding: 0.5rem; text-align: left; }
-body.contacts-page ul { max-height: calc(100vh - 1rem); margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+body.contacts-page ul { max-height: calc(100vh - 6rem); margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+
+.contacts-add-form { margin-bottom: 0.75rem; }
+.contacts-add-form > label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; }
+.contacts-add-controls { display: flex; gap: 0.35rem; }
+.contacts-add-controls input { flex: 1; min-width: 0; padding: 0.55rem; border: 1px solid var(--border); border-radius: 0.5rem; font: inherit; }
+.contacts-add-controls .conversation-access-button { padding: 0.55rem 0.7rem; }
+.contacts-status { min-height: 1.2em; margin: 0.35rem 0 0; color: #a12622; font-size: 0.8rem; }
+.contacts-status.is-success { color: var(--primary); }
 
 body.contacts-page ul li {
     height: 3rem;
@@ -248,7 +292,7 @@ body.contacts-page ul li {
 
 body.contacts-page ul li:hover { background: #eef5f0; }
 body.contacts-page ul li a { display: flex; align-items: center; height: 100%; padding: 0 0.75rem; color: #111; }
-body.contacts-page ul li a[aria-current="page"] { border-radius: 999px; font-weight: 700; }
+body.contacts-page ul li a[aria-current="page"] { border-radius: inherit; font-weight: 700; }
 body.settings-page { padding: 2rem 1rem; }
 
 /* Mobile */
@@ -283,7 +327,7 @@ body.settings-page { padding: 2rem 1rem; }
 
     body.conversation-page #conversation-title { margin: 1rem 2.75rem; }
     body.conversation-page .conversation-messages { width: 100%; }
-    body.conversation-page .conversation-main form { left: 1rem; width: calc(100% - 2rem); padding: 0.75rem 0; transform: none; }
+    body.conversation-page .conversation-main > form { left: 1rem; width: calc(100% - 2rem); padding: 0.75rem 0; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) { .settings-sidebar { transition: none; } }

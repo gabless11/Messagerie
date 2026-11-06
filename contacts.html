@@ -8,14 +8,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="Messagerie.css" />
     <script src="Messagerie.js" defer></script>
+    <script type="module" src="contacts.js"></script>
 </head>
 <body class="contacts-page">
 
-    <ul id="contacts-list">
-        <li><a href="conversation.html?contact=Didier" target="_top">Didier</a></li>
-        <li><a href="conversation.html?contact=Jean" target="_top">Jean</a></li>
-        <li><a href="conversation.html?contact=Roger" target="_top">Roger</a></li>
-    </ul>
+    <form id="add-contact-form" class="contacts-add-form">
+        <label for="contact-username">Ajouter un contact</label>
+        <div class="contacts-add-controls">
+            <input
+                type="text"
+                id="contact-username"
+                name="username"
+                placeholder="Nom d’utilisateur"
+                autocomplete="off"
+                required />
+            <button type="submit" class="conversation-access-button">Ajouter</button>
+        </div>
+        <p id="contacts-status" class="contacts-status" role="status" aria-live="polite"></p>
+    </form>
+
+    <ul id="contacts-list"></ul>
 
 </body>
 </html>

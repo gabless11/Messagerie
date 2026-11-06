@@ -6,8 +6,8 @@
         <title>Connexion</title>
         <meta
               name="description"
-              content="Blabla" /> 
-        <link 
+              content="Blabla" />
+        <link
               rel="stylesheet"
               href="Messagerie.css" />
         <script src="Messagerie.js" defer></script>
@@ -39,6 +39,18 @@
                            name="email"
                            autocomplete="email" />
                 </p>
+                <p id="signup-username-field" hidden>
+                    <label for="signup-username">Nom d’utilisateur :</label>
+                    <input
+                           type="text"
+                           id="signup-username"
+                           name="username"
+                           autocomplete="username"
+                           minlength="3"
+                           maxlength="30"
+                           pattern="[A-Za-z0-9_]+"
+                           title="Utilisez de 3 à 30 lettres, chiffres ou traits de soulignement." />
+                </p>
                 <p>
                     <label for="password">Mot de passe :</label>
                     <input
@@ -48,7 +60,7 @@
                            autocomplete="current-password"
                            required />
                     <label class="password-visibility">
-                        <input type="checkbox" onclick="showpassword()" />
+                        <input type="checkbox" onclick="togglePasswordVisibility()" />
                         Afficher le mot de passe
                     </label>
                 </p>

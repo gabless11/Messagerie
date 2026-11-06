@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="Messagerie.css" />
     <script src="Messagerie.js" defer></script>
+    <script type="module" src="conversation.js"></script>
 </head>
 <body class="conversation-page">
     <aside class="contacts-sidebar" aria-label="Mes contacts">
@@ -36,6 +37,7 @@
             aria-label="Messages de la conversation"
             aria-live="polite">
         </section>
+        <p id="conversation-status" class="conversation-status" role="status" aria-live="polite"></p>
         <form id="message-form">
             <div class="message-composer">
                 <input type="text" id="message" name="message" aria-label="Message" autocomplete="off" />
